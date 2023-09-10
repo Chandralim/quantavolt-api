@@ -1,0 +1,14 @@
+CREATE TABLE public.institutes
+(
+    created_at bigint NOT NULL,
+    updated_at bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('institutes_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    address text COLLATE pg_catalog."default" NOT NULL,
+    phone_number character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    can_use_until bigint,
+    internal_user_id bigint NOT NULL,
+    CONSTRAINT institutes_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
