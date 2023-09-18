@@ -167,12 +167,12 @@ class MyLib
     return round((float)($date->format("U") . "." . $date->format("U")) * 1000);
   }
 
-  // public static function utcMillis($strDate){
-  //   // date local to utc millis
-  //   $date = new \DateTime($strDate);
-  //   $date->sub(new \DateInterval('PT7H'));
-  //   return round((float)($date->format("U").".".$date->format("v"))*1000);
-  // }
+  public static function utcMillis($strDate){
+    // date local to utc millis
+    $date = new \DateTime($strDate);
+    $date->sub(new \DateInterval('PT7H'));
+    return round((float)($date->format("U").".".$date->format("v"))*1000);
+  }
 
 
   public static function millisToDateUTC($millis)

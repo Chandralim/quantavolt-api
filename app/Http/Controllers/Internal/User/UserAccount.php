@@ -18,13 +18,14 @@ class UserAccount extends Controller
   {
     $request["email"] = strtolower($request->email);
     $rules = [
-      'email' => 'required|exists:\App\Model\Internal\User,email',
+      'email' => 'required|email|exists:\App\Model\Internal\User,email',
       'password'=>"required|min:8",
     ];
 
     $messages=[
       'email.required' => 'Email tidak boleh kosong',
       'email.exists' => 'Email tidak terdaftar',
+      'email.email' => 'Format Email salah',
       'password.required' => 'Kata Sandi tidak boleh kosong',
       'password.min' => 'Kata Sandi minimal 8 Karakter',
     ];
@@ -82,7 +83,7 @@ class UserAccount extends Controller
         // "id"=>$p_user->id,
         "email"=>$p_user->email,
         // "scope"=>($p_user->role && count($p_user->role->permissions)>0) ? $p_user->role->permissions->pluck('name') : [],
-        "scope"=>$p_user->listPermissions()
+        "scopes"=>$p_user->listPermissions()
       ]
     ],200);
   }

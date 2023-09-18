@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('/internal/user', [\App\Http\Controllers\Internal\User\UserController::class, 'store']);
+
 Route::get('/',function (){
     return "ok";
 });

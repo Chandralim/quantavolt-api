@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Requests\Internal;
+namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 class BankRequest extends FormRequest
@@ -12,16 +12,16 @@ class BankRequest extends FormRequest
     public function rules()
     {
         $rules = [];
-        if (request()->isMethod('post')) {
-            $rules['code'] = 'required|min:3|max:255|regex:/^\S*$/|unique:\App\Model\Bank,code';
-        }
-        if (request()->isMethod('get')) {
-            $rules['code'] = 'required|min:3|max:255|regex:/^\S*$/|exists:\App\Model\Bank,code';
-        }
-        if (request()->isMethod('put')) {
-            $rules['code_old'] = 'required|min:3|max:255|regex:/^\S*$/|exists:App\Model\Bank,code';
-            $rules['code'] = 'required|min:3|max:255|regex:/^\S*$/|unique:\App\Model\Bank,code,'.request()->code_old;
-        }
+        // if (request()->isMethod('post')) {
+        //     $rules['code'] = 'required|min:3|max:255|regex:/^\S*$/|unique:\App\Model\Bank,code';
+        // }
+        // if (request()->isMethod('get')) {
+        //     $rules['code'] = 'required|min:3|max:255|regex:/^\S*$/|exists:\App\Model\Bank,code';
+        // }
+        // if (request()->isMethod('put')) {
+        //     $rules['code_old'] = 'required|min:3|max:255|regex:/^\S*$/|exists:App\Model\Bank,code';
+        //     $rules['code'] = 'required|min:3|max:255|regex:/^\S*$/|unique:\App\Model\Bank,code,'.request()->code_old;
+        // }
         if(request()->isMethod('post') || request()->isMethod('put')){
             $rules['name'] = 'required|max:255';
             $rules['account_number'] = 'required|max:255';            

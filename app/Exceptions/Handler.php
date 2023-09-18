@@ -89,7 +89,7 @@ class Handler extends ExceptionHandler
           //   }, $error);
           // }, $validationErrors);
           // $message = $validationErrors;
-          return response()->json($exception->errors(), $rendered->getStatusCode());
+          return response()->json($exception->errors(), $status_code);
         }
         // cek jika eksepsinya dikarenakan kegagalan query
         else if ($exception instanceof QueryException) {
