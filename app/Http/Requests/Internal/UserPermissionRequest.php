@@ -1,7 +1,10 @@
 <?php
-namespace App\Http\Requests;
+
+namespace App\Http\Requests\Internal;
+
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 class UserPermissionRequest extends FormRequest
 {
     /**
@@ -15,10 +18,10 @@ class UserPermissionRequest extends FormRequest
     }
 
     /**
-    * Get the validation rules that apply to the request.
-    *
-    * @return array
-    */
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         $rules = [];
@@ -28,15 +31,15 @@ class UserPermissionRequest extends FormRequest
         //     $rules['password'] = 'required|min:8|max:255';
         // }
         if (request()->isMethod('get')) {
-            $rules['id'] = 'required|exists:App\Model\User,id';
+            $rules['id'] = 'required|exists:App\Model\Internal\User,id';
             //    $rules['code'] = 'required|min:3|regex:/^\S*$/|unique:\App\Model\Cash,code';
         }
         if (request()->isMethod('put')) {
-            $rules['id'] = 'required|exists:App\Model\User,id';
+            $rules['id'] = 'required|exists:App\Model\Internal\User,id';
             // $rules['username'] = 'required|regex:/^\S*$/|max:255|unique:App\Model\User,username,'.request()->id;
             // $rules['password'] = 'nullable|min:8|max:255';
         }
-        if(request()->isMethod('post') || request()->isMethod('put')){
+        if (request()->isMethod('post') || request()->isMethod('put')) {
             // $rules['employee_nik'] = 'nullable|exists:App\Model\Employee,nik';
             // // $rules['name'] = 'required|max:255';
             // $rules['can_login'] = 'required|in:0,1';
@@ -49,7 +52,7 @@ class UserPermissionRequest extends FormRequest
         return [
             'id.required' => 'ID tidak boleh kosong',
             'id.exists' => 'ID tidak terdaftar',
-            
+
             // 'username.regex' => 'Nama Pengguna tidak boleh ada spasi',
             // 'username.required' => 'Nama Pengguna tidak boleh kosong',
             // 'username.unique' => 'Nama Pengguna sudah digunakan',

@@ -20,9 +20,9 @@ class InternalUserPermissionSeeder extends Seeder
         $aps = DB::table('internal.action_permissions')->get();
         foreach ($aps as $key => $value) {
             DB::table('internal.user_permissions')->insert([
-                "user_id"=>1,
-                "action_permission_id"=>$value->id,
-                "created_by"=>1,
+                "user_id" => 1,
+                "action_permission_id" => $value->id,
+                "created_by" => 1,
             ]);
         }
 
@@ -34,8 +34,8 @@ class InternalUserPermissionSeeder extends Seeder
         //         "data_permission_id"=>$i,
         //         "created_by"=>1,
         //     ]);
-            
+
         // }
-       
+
     }
 }

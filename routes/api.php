@@ -28,23 +28,33 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
   return response()->json([
-    "message"=>"test"
-  ],500);
+    "message" => "test"
+  ], 500);
 })->name('login');
 
 Route::get('/run', [RunController::class, 'index']);
 // Route::post('/login', [UserAccount::class, 'login']);
-Route::post('/internal/user', [\App\Http\Controllers\Internal\User\UserController::class, 'store']);
 
-Route::prefix('internal')->group(function (){
+Route::prefix('internal')->group(function () {
   Route::post('/login', [\App\Http\Controllers\Internal\User\UserAccount::class, 'login']);
   Route::get('/check_user', [\App\Http\Controllers\Internal\User\UserAccount::class, 'checkUser']);
 
   Route::get('/users', [\App\Http\Controllers\Internal\User\UserController::class, 'index']);
   Route::get('/user', [\App\Http\Controllers\Internal\User\UserController::class, 'show']);
+  Route::post('/user', [\App\Http\Controllers\Internal\User\UserController::class, 'store']);
   Route::put('/user', [\App\Http\Controllers\Internal\User\UserController::class, 'update']);
   Route::delete('/user', [\App\Http\Controllers\Internal\User\UserController::class, 'delete']);
 
+  Route::get('/action_permissions', [\App\Http\Controllers\Internal\User\UserPermissionController::class, 'getActionPermissions']);
+  Route::get('/data_permissions', [\App\Http\Controllers\Internal\User\UserPermissionController::class, 'getDataPermissions']);
+  Route::get('/user/permissions', [\App\Http\Controllers\Internal\User\UserPermissionController::class, 'show']);
+  Route::put('/user/permissions', [\App\Http\Controllers\Internal\User\UserPermissionController::class, 'update']);
+
+  Route::get('/institutes', [\App\Http\Controllers\Internal\InstituteController::class, 'index']);
+  Route::get('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'show']);
+  Route::post('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'store']);
+  Route::put('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'update']);
+  Route::delete('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'delete']);
 });
 
 // Route::middleware('auth:api')->group(function () {
@@ -53,10 +63,6 @@ Route::prefix('internal')->group(function (){
 //   Route::put('/change_password', [UserAccount::class, 'change_password']);
 //   Route::put('/change_name', [UserAccount::class, 'change_name']);
 
-//   Route::get('/action_permissions', [UserPermissionController::class, 'getActionPermissions']);
-//   Route::get('/data_permissions', [UserPermissionController::class, 'getDataPermissions']);
-//   Route::get('/user/permissions', [UserPermissionController::class, 'show']);
-//   Route::put('/user/permissions', [UserPermissionController::class, 'update']);
 
 
 //   Route::get('/employees', [EmployeeController::class, 'index']);

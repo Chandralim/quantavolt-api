@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            InternalUserSeeder::class,
+            // InternalUserSeeder::class,
             InternalActionPermissionSeeder::class,
-            InternalDataPermissionSeeder::class,
+            // InternalDataPermissionSeeder::class,
             InternalUserPermissionSeeder::class,
             // UnitSeeder::class,
             // QuotationItemSeeder::class,
