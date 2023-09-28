@@ -55,6 +55,12 @@ Route::prefix('internal')->group(function () {
   Route::post('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'store']);
   Route::put('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'update']);
   Route::delete('/institute', [\App\Http\Controllers\Internal\InstituteController::class, 'delete']);
+
+  Route::get('/members', [\App\Http\Controllers\Internal\MemberController::class, 'index']);
+  Route::get('/member', [\App\Http\Controllers\Internal\MemberController::class, 'show']);
+  Route::post('/member', [\App\Http\Controllers\Internal\MemberController::class, 'store']);
+  Route::put('/member', [\App\Http\Controllers\Internal\MemberController::class, 'update']);
+  Route::delete('/member', [\App\Http\Controllers\Internal\MemberController::class, 'delete']);
 });
 
 // Route::middleware('auth:api')->group(function () {

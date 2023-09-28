@@ -89,6 +89,30 @@ class InternalActionPermissionSeeder extends Seeder
                 "action" => "remove",
                 "description" => "Menghapus Data Institut",
             ],
+            [
+                "name" => "member",
+                "ordinal" => "1",
+                "action" => "view",
+                "description" => "Melihat Data Member",
+            ],
+            [
+                "name" => "member",
+                "ordinal" => "2",
+                "action" => "add",
+                "description" => "Menambah Data Member",
+            ],
+            [
+                "name" => "member",
+                "ordinal" => "3",
+                "action" => "edit",
+                "description" => "Mengubah Data Member",
+            ],
+            [
+                "name" => "member",
+                "ordinal" => "4",
+                "action" => "remove",
+                "description" => "Menghapus Data Member",
+            ],
         ];
 
         foreach ($dt as $k => $v) {

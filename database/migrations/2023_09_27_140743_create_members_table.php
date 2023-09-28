@@ -16,12 +16,12 @@ class CreateMembersTable extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->string('fullname')->nullable();
-            $table->string('password');
-            $table->string('role', 50);
+            $table->string('password')->nullable();
+            // $table->string('role', 50);
             $table->boolean('can_login')->default(false);
-            // $table->unsignedBigInteger('employee_no')->nullable();
+
             $table->text('api_token')->nullable();
             $table->unsignedBigInteger('created_at')->nullable();
             $table->unsignedBigInteger('updated_at')->nullable();
