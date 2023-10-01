@@ -40,6 +40,7 @@ class MemberRequest extends FormRequest
         if (request()->isMethod('post') || request()->isMethod('put')) {
             // $rules['role'] = 'required';
             $rules['can_login'] = 'required|in:0,1';
+            $rules['photo'] = 'nullable|image|mimes:jpeg|max:2048';
         }
         return $rules;
     }

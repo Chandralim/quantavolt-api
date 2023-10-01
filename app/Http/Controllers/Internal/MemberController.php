@@ -11,8 +11,10 @@ use Illuminate\Validation\ValidationException;
 use App\Model\Main\Member;
 use App\Http\Resources\Internal\MemberResource;
 use App\Http\Requests\Internal\MemberRequest;
-
+use Exception;
 use Illuminate\Support\Facades\DB;
+use Image;
+use File;
 
 class MemberController extends Controller
 {
@@ -205,8 +207,31 @@ class MemberController extends Controller
       ], 422);
     }
 
+
+
+
     DB::beginTransaction();
     try {
+
+      $new_image = $request->file('photo');
+      if ($new_image != null) {
+        $date = new \DateTime();
+        $timestamp = $date->format("Y-m-d H:i:s.v");
+        $ext = $new_image->extension();
+        $file_name = md5(preg_replace('/( |-|:)/', '', $timestamp)) . '.' . $ext;
+        $location = "files/members/{$file_name}";
+        try {
+          ini_set('memory_limit', '256M');
+          Image::make($new_image)->save(files_path($location));
+        } catch (\Exception $e) {
+          throw new Exception($e->getMessage());
+          throw new Exception("Simpan Foto Gagal");
+        }
+      } else {
+        $location = null;
+      }
+
+
       $model_query                      = new Member();
       $model_query->username            = $request->username;
       $model_query->email               = MyLib::emptyStrToNull($request->email);
@@ -214,6 +239,7 @@ class MemberController extends Controller
       if ($password)
         $model_query->password          = bcrypt($password);
       $model_query->can_login           = $request->can_login;
+      $model_query->photo               = $location;
 
       $model_query->internal_created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->internal_created_by = $this->auth->id;
@@ -235,7 +261,9 @@ class MemberController extends Controller
       }
 
       return response()->json([
-        "message" => "Proses tambah data gagal"
+        // "message" => "Proses tambah data gagal",
+        "message" => $e->getMessage(),
+
       ], 400);
     }
   }
@@ -246,11 +274,45 @@ class MemberController extends Controller
 
     $can_login = $request->can_login;
     $password = $request->password;
-
+    $photo_preview = $request->photo_preview;
 
     DB::beginTransaction();
     try {
+      $new_image = $request->file('photo');
+
+      if ($new_image != null) {
+        $date = new \DateTime();
+        $timestamp = $date->format("Y-m-d H:i:s.v");
+        $ext = $new_image->extension();
+        $file_name = md5(preg_replace('/( |-|:)/', '', $timestamp)) . '.' . $ext;
+        $filePath = "files/members/";
+        $location = $filePath . $file_name;
+        // $location = "files/members/{$file_name}";
+
+        ini_set('memory_limit', '256M');
+        // $url = "files/directory/brochures/{$file_name}";
+        // Image::make($new_image)->save(public_path($location));
+        // Image::make($new_image)->save(files_path($url));
+        $new_image->move(files_path($filePath), $file_name);
+      }
+
+      if ($new_image == null && $photo_preview == null) {
+        $location = null;
+      }
+
       $model_query                      = Member::find($request->id);
+
+
+      if ($photo_preview == null) {
+        if (File::exists(files_path($model_query->photo)) && $model_query->photo != null) {
+          unlink(files_path($model_query->photo));
+        }
+
+        // if(File::exists(files_path($data->url)) && $data->url != null){
+        //   unlink(files_path($data->url));
+        // }
+      }
+
 
       if ($can_login == 1 && $password == null && $model_query->password == null) {
         return response()->json([
@@ -264,6 +326,7 @@ class MemberController extends Controller
       if ($password)
         $model_query->password          = bcrypt($password);
       $model_query->can_login           = $request->can_login;
+      $model_query->photo               = $location;
 
       $model_query->internal_updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->internal_updated_by = $this->auth->id;

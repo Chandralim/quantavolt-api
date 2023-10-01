@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -13,19 +14,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/internal/user', [\App\Http\Controllers\Internal\User\UserController::class, 'store']);
 
-Route::get('/',function (){
+Route::get('/', function () {
     return "ok";
 });
 
-Route::get('files/{args?}', function($args){
-    $path = __DIR__.'/../../public/files/' . $args;
+Route::get('files/{args?}', function ($args) {
+    // $path = __DIR__.'/../../public/files/' . $args;
+    $path = __DIR__ . '/../public/files/' . $args;
     if (file_exists($path)) {
-      $p=explode("/",$path);
-      $filename=array_pop($p);
+        $p = explode("/", $path);
+        $filename = array_pop($p);
         // return Response::file($path);
         return Response::make(file_get_contents($path), 200, [
             'Content-Type' => mct($filename),
-            'Content-Disposition' => 'inline; filename="'.$filename.'"'
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
         ]);
     }
 })->where('args', '(.*)');

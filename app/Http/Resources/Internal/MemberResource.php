@@ -24,6 +24,8 @@ class MemberResource extends JsonResource
             'password'            => "",
             'role'                => $this->role ?? '',
             'can_login'           => $this->can_login ? 1 : 0,
+            // 'photo'               => $request->getHttpHost() . "/" . $this->photo ?? "",
+            'photo'               => $this->photo ? '/api/' . $this->photo : "",
 
             'created_at'          => $this->created_at,
             'updated_at'          => $this->updated_at,

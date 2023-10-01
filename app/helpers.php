@@ -15,16 +15,19 @@
 // }
 
 if (!function_exists('files_path')) {
-  function files_path($x="")
-  {
-    return public_path("/../../public/".$x);
-  }
+    function files_path($x = "")
+    {
+        // return public_path("/../../public/".$x);
+        // return public_path("/../public/" . $x);
+        return public_path($x);
+    }
 }
 
 
-if(!function_exists('mct')) {
+if (!function_exists('mct')) {
 
-    function mct($filename) {
+    function mct($filename)
+    {
 
         $mime_types = array(
 
@@ -51,7 +54,7 @@ if(!function_exists('mct')) {
             'tif' => 'image/tiff',
             'svg' => 'image/svg+xml',
             'svgz' => 'image/svg+xml',
-            'webp'=>'image/webp',
+            'webp' => 'image/webp',
 
             // archives
             'zip' => 'application/zip',
@@ -82,20 +85,18 @@ if(!function_exists('mct')) {
             'odt' => 'application/vnd.oasis.opendocument.text',
             'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
         );
-        $pfs=explode('.',$filename);
-        $ext=strtolower(array_pop($pfs));
+        $pfs = explode('.', $filename);
+        $ext = strtolower(array_pop($pfs));
 
         // $ext = strtolower(array_pop(explode('.',$filename)));
         if (array_key_exists($ext, $mime_types)) {
             return $mime_types[$ext];
-        }
-        elseif (function_exists('finfo_open')) {
+        } elseif (function_exists('finfo_open')) {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $filename);
             finfo_close($finfo);
             return $mimetype;
-        }
-        else {
+        } else {
             return 'application/octet-stream';
         }
     }

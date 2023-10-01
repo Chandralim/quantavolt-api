@@ -63,6 +63,20 @@ Route::prefix('internal')->group(function () {
   Route::delete('/member', [\App\Http\Controllers\Internal\MemberController::class, 'delete']);
 });
 
+Route::get('files/{args?}', function ($args) {
+  // $path = __DIR__.'/../../public/files/' . $args;
+  $path = __DIR__ . '/../public/files/' . $args;
+  if (file_exists($path)) {
+    $p = explode("/", $path);
+    $filename = array_pop($p);
+    // return Response::file($path);
+    return Response::make(file_get_contents($path), 200, [
+      'Content-Type' => mct($filename),
+      'Content-Disposition' => 'inline; filename="' . $filename . '"'
+    ]);
+  }
+})->where('args', '(.*)');
+
 // Route::middleware('auth:api')->group(function () {
 
 //   Route::post('/logout', [UserAccount::class, 'logout']);

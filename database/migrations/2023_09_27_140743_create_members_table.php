@@ -19,6 +19,7 @@ class CreateMembersTable extends Migration
             $table->string('email')->nullable()->unique();
             $table->string('fullname')->nullable();
             $table->string('password')->nullable();
+            $table->text('photo')->nullable();
             // $table->string('role', 50);
             $table->boolean('can_login')->default(false);
 
