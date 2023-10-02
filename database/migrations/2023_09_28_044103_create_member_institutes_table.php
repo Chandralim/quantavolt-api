@@ -14,8 +14,8 @@ class CreateMemberInstitutesTable extends Migration
     public function up()
     {
         Schema::create('member_institutes', function (Blueprint $table) {
-            $table->unsignedBigInteger('member_id');
-            $table->unsignedBigInteger('institute_id');
+            $table->foreignId('member_id')->nullable()->references('id')->on('members')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('institute_id')->nullable()->references('id')->on('institutes')->onDelete('restrict')->onUpdate('cascade');
             $table->string('role', 50);
             $table->unsignedBigInteger('created_at')->nullable();
             $table->unsignedBigInteger('updated_at')->nullable();

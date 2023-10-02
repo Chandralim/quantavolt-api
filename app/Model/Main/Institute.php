@@ -82,4 +82,9 @@ class Institute extends Authenticatable
   {
     return $this->hasOne(\App\Model\Internal\User::class, 'id', "internal_marketer_by");
   }
+
+  public function members()
+  {
+    return $this->belongsToMany(\App\Model\Main\Member::class, 'member_institutes')->withPivot('role');
+  }
 }

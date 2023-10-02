@@ -179,7 +179,16 @@ class InstituteController extends Controller
   {
     MyLib::checkScope($this->auth, ['ap-institute-view']);
 
-    $model_query = Institute::with('internal_marketer')->find($request->id);
+    $model_query = Institute::with([
+      'internal_marketer',
+      'members' => function ($q) {
+        $q->wherePivot('role', 'Operator');
+        $q->where(function ($q2) {
+          $q2->whereNotNull("member_institutes.internal_created_by")
+            ->orWhereNotNull("member_institutes.internal_updated_by");
+        });
+      }
+    ])->find($request->id);
     return response()->json([
       "data" => new InstituteResource($model_query),
     ], 200);
@@ -210,6 +219,21 @@ class InstituteController extends Controller
       $model_query->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->internal_updated_by = $this->auth->id;
       $model_query->save();
+
+      $operator_member_id = $request->operator_member_id;
+      if ($operator_member_id) {
+
+        \App\Model\Main\MemberInstitutes::insert([
+          "member_id" => $operator_member_id,
+          "institute_id" => $model_query->id,
+          "role" => "Operator",
+          "internal_created_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
+          "internal_created_by" => $this->auth->id,
+          "internal_updated_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
+          "internal_updated_by" => $this->auth->id,
+        ]);
+      }
+
       // if($request->employee_no){
       //   $employee = Employee::where("no",$request->employee_no)->first();
       //   if(!$employee){
@@ -272,6 +296,42 @@ class InstituteController extends Controller
       $model_query->internal_updated_by = $this->auth->id;
       $model_query->save();
 
+
+      $operator_member_id = $request->operator_member_id;
+
+      $mdl_member_institute = \App\Model\Main\MemberInstitutes::where("role", "Operator")
+        ->where("institute_id", $model_query->id)
+        ->where(function ($q) {
+          $q->whereNotNull("internal_created_by")->whereNotNull("internal_updated_by");
+        });
+
+      $member_institute = $mdl_member_institute->first();
+
+      if ($member_institute && ($operator_member_id == null || $operator_member_id !== $member_institute->member_id))
+        $mdl_member_institute->delete();
+
+      if ($operator_member_id !== null && $operator_member_id !== $member_institute->member_id) {
+
+        \App\Model\Main\MemberInstitutes::insert([
+          "member_id" => $operator_member_id,
+          "institute_id" => $model_query->id,
+          "role" => "Operator",
+          "internal_created_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
+          "internal_created_by" => $this->auth->id,
+          "internal_updated_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
+          "internal_updated_by" => $this->auth->id,
+        ]);
+      } elseif ($operator_member_id !== null && $operator_member_id == $member_institute->member_id) {
+        \App\Model\Main\MemberInstitutes::where("member_id", $operator_member_id)
+          ->where("role", "Operator")
+          ->where("institute_id", $model_query->id)
+          ->update([
+            "internal_created_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
+            "internal_created_by" => $this->auth->id,
+            "internal_updated_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
+            "internal_updated_by" => $this->auth->id,
+          ]);
+      }
 
       // if($request->employee_no){
       //   //Check apakah di update dengan data yang sama

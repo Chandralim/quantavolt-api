@@ -29,6 +29,8 @@ class InstituteResource extends JsonResource
             'updated_at' => $this->updated_at,
             'internal_updated_by' => $this->internal_updated_by,
             'internal_marketer' => new UserResource($this->whenLoaded('internal_marketer')),
+            'members' => MemberResource::collection($this->whenLoaded('members')),
+
             // 'ordinal'=>$this->ordinal,
             // 'material'=>new MaterialResource($this->whenLoaded('material')),
             // 'qty' => $this->qty,

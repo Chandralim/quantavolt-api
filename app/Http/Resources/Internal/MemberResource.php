@@ -22,7 +22,7 @@ class MemberResource extends JsonResource
             'email'               => $this->email ?? "",
             'fullname'            => $this->fullname ?? "",
             'password'            => "",
-            'role'                => $this->role ?? '',
+            // 'role'                => $this->role ?? '',
             'can_login'           => $this->can_login ? 1 : 0,
             // 'photo'               => $request->getHttpHost() . "/" . $this->photo ?? "",
             'photo'               => $this->photo ? '/api/' . $this->photo : "",
@@ -37,6 +37,9 @@ class MemberResource extends JsonResource
             'internal_updated_by' => $this->internal_updated_by,
             'internal_updator' => new UserResource($this->whenLoaded('internal_updator')),
             'internal_creator' => new UserResource($this->whenLoaded('internal_creator')),
+            'roles' => $this->whenPivotLoaded('member_institutes', function () {
+                return $this->pivot->role;
+            }),
 
         ];
     }

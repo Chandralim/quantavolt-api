@@ -35,6 +35,7 @@ class InstituteRequest extends FormRequest
         }
         if (request()->isMethod('post') || request()->isMethod('put')) {
             $rules['internal_marketer_id'] = 'required|exists:App\Model\Internal\User,id';
+            $rules['operator_member_id'] = 'nullable|exists:App\Model\Main\Member,id';
             $rules['name'] = 'required|max:255';
             $rules['address'] = 'required';
             $rules['contact_number'] = 'required|max:20';
@@ -62,6 +63,9 @@ class InstituteRequest extends FormRequest
 
             'internal_marketer_id.required' => 'Marketer ID tidak boleh kosong',
             'internal_marketer_id.exists' => 'Marketer ID tidak terdaftar',
+
+            'operator_member_id.required' => 'Member ID tidak boleh kosong',
+            'operator_member_id.exists' => 'Member ID tidak terdaftar',
 
         ];
     }
