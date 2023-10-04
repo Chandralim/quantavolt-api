@@ -25,18 +25,19 @@ class InstituteRequest extends FormRequest
     public function rules()
     {
         $rules = [];
-        // if (request()->isMethod('post')) {
-        // }
+        if (request()->isMethod('post')) {
+            $rules['name'] = 'required|max:255|unique:App\Model\Main\Institute,name';
+        }
         if (request()->isMethod('get')) {
             $rules['id'] = 'required|exists:App\Model\Main\Institute,id';
         }
         if (request()->isMethod('put')) {
             $rules['id'] = 'required|exists:App\Model\Main\Institute,id';
+            $rules['name'] = 'required|max:255|unique:App\Model\Main\Institute,name,' . request()->id;
         }
         if (request()->isMethod('post') || request()->isMethod('put')) {
             $rules['internal_marketer_id'] = 'required|exists:App\Model\Internal\User,id';
             $rules['operator_member_id'] = 'nullable|exists:App\Model\Main\Member,id';
-            $rules['name'] = 'required|max:255';
             $rules['address'] = 'required';
             $rules['contact_number'] = 'required|max:20';
             $rules['contact_person'] = 'required|max:50';
@@ -52,6 +53,7 @@ class InstituteRequest extends FormRequest
 
             'name.required' => 'Nama tidak boleh kosong',
             'name.max' => 'Nama tidak boleh lebih dari 255 karakter',
+            'name.unique' => 'Nama sudah terdaftar',
 
             'address.required' => 'Alamat tidak boleh kosong',
 

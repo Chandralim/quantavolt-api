@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Internal\User;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -18,12 +19,12 @@ class UserController extends Controller
   private $auth;
   public function __construct(Request $request)
   {
-    $this->auth = \App\Helpers\MyUserInternal::user();
+    $this->auth = \App\Helpers\MyAdmin::user();
   }
 
   public function index(Request $request)
   {
-    \App\Helpers\MyUserInternal::checkScope($this->auth,['ap-user-view']);
+    \App\Helpers\MyAdmin::checkScope($this->auth, ['ap-user-view']);
 
     //======================================================================================================
     // Pembatasan Data hanya memerlukan limit dan offset
@@ -33,8 +34,8 @@ class UserController extends Controller
     if (isset($request->limit)) {
       if ($request->limit <= 250) {
         $limit = $request->limit;
-      }else {
-        throw new MyException(["message"=>"Max Limit 250"]);
+      } else {
+        throw new MyException(["message" => "Max Limit 250"]);
       }
     }
 
@@ -45,7 +46,7 @@ class UserController extends Controller
     //======================================================================================================
     if (isset($request->page)) {
       $page =  (int) $request->page;
-      $offset = ($page*$limit)-$limit;
+      $offset = ($page * $limit) - $limit;
     }
 
 
@@ -59,28 +60,28 @@ class UserController extends Controller
     //======================================================================================================
 
     if ($request->sort) {
-      $sort_lists=[];
+      $sort_lists = [];
 
-      $sorts=explode(",",$request->sort);
+      $sorts = explode(",", $request->sort);
       foreach ($sorts as $key => $sort) {
-        $side = explode(":",$sort);
-        $side[1]=isset($side[1])?$side[1]:'ASC';
-        $sort_lists[$side[0]]=$side[1];
+        $side = explode(":", $sort);
+        $side[1] = isset($side[1]) ? $side[1] : 'ASC';
+        $sort_lists[$side[0]] = $side[1];
       }
 
       if (isset($sort_lists["email"])) {
-        $model_query = $model_query->orderBy("email",$sort_lists["email"]);
+        $model_query = $model_query->orderBy("email", $sort_lists["email"]);
       }
 
       if (isset($sort_lists["id"])) {
-        $model_query = $model_query->orderBy("id",$sort_lists["id"]);
+        $model_query = $model_query->orderBy("id", $sort_lists["id"]);
       }
 
       if (isset($sort_lists["created_at"])) {
-        $model_query = $model_query->orderBy("created_at",$sort_lists["created_at"]);
+        $model_query = $model_query->orderBy("created_at", $sort_lists["created_at"]);
       }
 
-      
+
       // if (isset($sort_lists["role"])) {
       //   $model_query = $model_query->orderBy(function($q){
       //     $q->from("internal.roles")
@@ -96,25 +97,25 @@ class UserController extends Controller
       //     ->whereColumn("u.id","users.id");
       //   },$sort_lists["auth"]);
       // }
-    }else {
-      $model_query = $model_query->orderBy('id','ASC');
+    } else {
+      $model_query = $model_query->orderBy('id', 'ASC');
     }
     //======================================================================================================
     // Model Filter | Example $request->like = "username:%username,role:%role%,name:role%,";
     //======================================================================================================
 
     if ($request->like) {
-      $like_lists=[];
+      $like_lists = [];
 
-      $likes=explode(",",$request->like);
+      $likes = explode(",", $request->like);
       foreach ($likes as $key => $like) {
-        $side = explode(":",$like);
-        $side[1]=isset($side[1])?$side[1]:'';
-        $like_lists[$side[0]]=$side[1];
+        $side = explode(":", $like);
+        $side[1] = isset($side[1]) ? $side[1] : '';
+        $like_lists[$side[0]] = $side[1];
       }
 
       if (isset($like_lists["email"])) {
-        $model_query = $model_query->orWhere("email","ilike",$like_lists["email"]);
+        $model_query = $model_query->orWhere("email", "ilike", $like_lists["email"]);
       }
 
       // if (isset($like_lists["role"])) {
@@ -125,21 +126,21 @@ class UserController extends Controller
     // ==============
     // Model Filter
     // ==============
-    
+
     if (isset($request->username)) {
-      $model_query = $model_query->where("username",'ilike','%'.$request->username.'%');
+      $model_query = $model_query->where("username", 'ilike', '%' . $request->username . '%');
     }
 
     if (isset($request->name)) {
-      $model_query = $model_query->where("name",'ilike','%'.$request->name.'%');
+      $model_query = $model_query->where("name", 'ilike', '%' . $request->name . '%');
     }
 
-    $model_query=$model_query->get();
+    $model_query = $model_query->get();
 
     return response()->json([
       // "data"=>EmployeeResource::collection($employees->keyBy->id),
-      "data"=>UserResource::collection($model_query),
-    ],200);
+      "data" => UserResource::collection($model_query),
+    ], 200);
   }
 
   // public function getProduct($store_domain,$product_domain)
@@ -182,24 +183,24 @@ class UserController extends Controller
   // }
   public function show(UserRequest $request)
   {
-    MyLib::checkScope($this->auth,['ap-user-view']);
+    MyLib::checkScope($this->auth, ['ap-user-view']);
 
     $model_query = User::find($request->id);
     return response()->json([
-      "data"=>new UserResource($model_query),
-    ],200);
+      "data" => new UserResource($model_query),
+    ], 200);
   }
 
   public function store(UserRequest $request)
   {
-    MyLib::checkScope($this->auth,['ap-user-add']);
+    MyLib::checkScope($this->auth, ['ap-user-add']);
 
     DB::beginTransaction();
 
     try {
       $model_query             = new User();
       $model_query->email      = trim($request->email);
-      if($request->password){
+      if ($request->password) {
         $model_query->password = bcrypt($request->password);
       }
       // $model_query->employee_no = $request->employee_no;
@@ -216,26 +217,26 @@ class UserController extends Controller
       //   if(!$employee){
       //     throw new \Exception("Pegawai tidak terdaftar",1);
       //   }
-  
+
       //   if($employee->which_user_id !== null){
       //     throw new \Exception("Pegawai tidak tersedia",1);
       //   }
-  
+
       //   Employee::where("no",$request->employee_no)->update(["which_user_id"=>$model_query->id]);
-  
+
       // }
-      
+
       DB::commit();
       return response()->json([
-          "message"=>"Proses tambah data berhasil",
-      ],200);
+        "message" => "Proses tambah data berhasil",
+      ], 200);
     } catch (\Exception $e) {
       DB::rollback();
 
-      if($e->getCode()==1){
+      if ($e->getCode() == 1) {
         return response()->json([
-          "message"=>$e->getMessage(),
-        ],400);
+          "message" => $e->getMessage(),
+        ], 400);
       }
 
       // return response()->json([
@@ -243,20 +244,20 @@ class UserController extends Controller
       // ],400);
 
       return response()->json([
-        "message"=>"Proses tambah data gagal"
-      ],400);
+        "message" => "Proses tambah data gagal"
+      ], 400);
     }
   }
 
   public function update(UserRequest $request)
   {
-    MyLib::checkScope($this->auth,['ap-user-edit']);
+    MyLib::checkScope($this->auth, ['ap-user-edit']);
 
     DB::beginTransaction();
     try {
       $model_query              = User::find($request->id);
       $model_query->email       = trim($request->email);
-      if($request->password){
+      if ($request->password) {
         $model_query->password  = bcrypt($request->password);
       }
       $model_query->fullname    = $request->fullname;
@@ -266,7 +267,7 @@ class UserController extends Controller
       $model_query->updated_at  = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->updated_by  = $this->auth->id;
       $model_query->save();
-      
+
 
       // if($request->employee_no){
       //   //Check apakah di update dengan data yang sama
@@ -294,65 +295,62 @@ class UserController extends Controller
       //     Employee::where("which_user_id",$request->id)->update(["which_user_id"=>null]);
       //   }
       // }
-      
+
       DB::commit();
       return response()->json([
-        "message"=>"Proses ubah data berhasil",
-      ],200);
+        "message" => "Proses ubah data berhasil",
+      ], 200);
     } catch (\Exception $e) {
       DB::rollback();
-      if($e->getCode()==1){
+      if ($e->getCode() == 1) {
         return response()->json([
-          "message"=>$e->getMessage(),
-        ],400);
+          "message" => $e->getMessage(),
+        ], 400);
       }
       return response()->json([
-        "message"=>$e->getMessage(),
-      ],400);
+        "message" => $e->getMessage(),
+      ], 400);
       return response()->json([
-        "message"=>"Proses ubah data gagal"
-      ],400);
+        "message" => "Proses ubah data gagal"
+      ], 400);
     }
-
-
-    
   }
 
 
   public function delete(UserRequest $request)
   {
-    MyLib::checkScope($this->auth,['ap-user-remove']);
+    MyLib::checkScope($this->auth, ['ap-user-remove']);
 
     DB::beginTransaction();
-    
+
     try {
 
       $model_query = User::find($request->id);
-      if(!$model_query){
-        throw new \Exception("Data tidak terdaftar",1);
+      if (!$model_query) {
+        throw new \Exception("Data tidak terdaftar", 1);
       }
       $model_query->delete();
 
       DB::commit();
       return response()->json([
-          "message"=>"Proses ubah data berhasil",
-      ],200);
+        "message" => "Proses ubah data berhasil",
+      ], 200);
     } catch (\Exception  $e) {
       DB::rollback();
-      if ($e->getCode()=="23503") 
-      return response()->json([
-        "message"=>"Data tidak dapat dihapus, data masih terkait dengan data yang lain nya",
-      ],400);
-
-      if($e->getCode()==1){
+      if ($e->getCode() == "23503")
         return response()->json([
-          "message"=>$e->getMessage(),
-        ],400);
+          "message" => "Data tidak dapat dihapus, data masih terkait dengan data yang lain nya",
+        ], 400);
+
+      if ($e->getCode() == 1) {
+        return response()->json([
+          "message" => $e->getMessage(),
+        ], 400);
       }
 
       return response()->json([
-        "message"=>"Proses hapus data gagal",
-      ],400);
+        "message" => "Proses hapus data gagal",
+      ], 400);
       //throw $th;
     }
     // if ($model_query->delete()) {

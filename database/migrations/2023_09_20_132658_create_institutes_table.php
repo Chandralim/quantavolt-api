@@ -17,7 +17,7 @@ class CreateInstitutesTable extends Migration
             $table->unsignedBigInteger('created_at');
             $table->unsignedBigInteger('updated_at');
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('address');
             $table->string('contact_number', 20);
             $table->string('contact_person', 50);

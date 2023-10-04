@@ -19,12 +19,12 @@ class InstituteController extends Controller
   private $auth;
   public function __construct(Request $request)
   {
-    $this->auth = \App\Helpers\MyUserInternal::user();
+    $this->auth = \App\Helpers\MyAdmin::user();
   }
 
   public function index(Request $request)
   {
-    \App\Helpers\MyUserInternal::checkScope($this->auth, ['ap-institute-view']);
+    \App\Helpers\MyAdmin::checkScope($this->auth, ['ap-institute-view']);
 
     //======================================================================================================
     // Pembatasan Data hanya memerlukan limit dan offset
@@ -223,7 +223,7 @@ class InstituteController extends Controller
       $operator_member_id = $request->operator_member_id;
       if ($operator_member_id) {
 
-        \App\Model\Main\MemberInstitutes::insert([
+        \App\Model\Main\MemberInstitute::insert([
           "member_id" => $operator_member_id,
           "institute_id" => $model_query->id,
           "role" => "Operator",
@@ -299,7 +299,7 @@ class InstituteController extends Controller
 
       $operator_member_id = $request->operator_member_id;
 
-      $mdl_member_institute = \App\Model\Main\MemberInstitutes::where("role", "Operator")
+      $mdl_member_institute = \App\Model\Main\MemberInstitute::where("role", "Operator")
         ->where("institute_id", $model_query->id)
         ->where(function ($q) {
           $q->whereNotNull("internal_created_by")->whereNotNull("internal_updated_by");
@@ -312,7 +312,7 @@ class InstituteController extends Controller
 
       if ($operator_member_id !== null && $operator_member_id !== $member_institute->member_id) {
 
-        \App\Model\Main\MemberInstitutes::insert([
+        \App\Model\Main\MemberInstitute::insert([
           "member_id" => $operator_member_id,
           "institute_id" => $model_query->id,
           "role" => "Operator",
@@ -322,7 +322,7 @@ class InstituteController extends Controller
           "internal_updated_by" => $this->auth->id,
         ]);
       } elseif ($operator_member_id !== null && $operator_member_id == $member_institute->member_id) {
-        \App\Model\Main\MemberInstitutes::where("member_id", $operator_member_id)
+        \App\Model\Main\MemberInstitute::where("member_id", $operator_member_id)
           ->where("role", "Operator")
           ->where("institute_id", $model_query->id)
           ->update([

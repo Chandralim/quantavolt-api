@@ -5,7 +5,7 @@ namespace App\Model\Main;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MemberInstitutes extends Model
+class MemberInstitute extends Model
 {
     use HasFactory;
 
@@ -17,11 +17,11 @@ class MemberInstitutes extends Model
 
     public function member()
     {
-        $this->belongsTo(Member::class, "id", "member_id");
+        return $this->belongsTo(Member::class, "member_id", "id");
     }
 
     public function institute()
     {
-        $this->belongsTo(Institute::class, "id", "institute_id");
+        return $this->belongsTo(Institute::class, "institute_id", "id");
     }
 }

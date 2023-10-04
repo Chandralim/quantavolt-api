@@ -43,13 +43,13 @@ class Member extends Authenticatable
   //     'email_verified_at' => 'datetime',
   // ];
 
-  // public function generateToken()
-  // {
-  //   $this->api_token      = Str::random(200) . $this->id . Str::random(5) . "/#" . MyLib::getMillis();
-  //   $this->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
-  //   $this->save();
-  //   return $this->api_token;
-  // }
+  public function generateToken()
+  {
+    $this->api_token      = Str::random(200) . $this->id . Str::random(5) . "/m#" . MyLib::getMillis();
+    $this->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+    $this->save();
+    return $this->api_token;
+  }
 
   // public function role()
   // {

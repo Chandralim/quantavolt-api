@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 use App\Helpers\MyLib;
-use App\Helpers\MyUserInternal;
+use App\Helpers\MyAdmin;
 
 use App\Exceptions\MyException;
 use App\Helpers\MyLog;
@@ -23,7 +23,7 @@ class UserPermissionController extends Controller
   private $auth;
   public function __construct(Request $request)
   {
-    $this->auth = MyUserInternal::user();
+    $this->auth = MyAdmin::user();
   }
 
   public function getActionPermissions()
@@ -42,7 +42,7 @@ class UserPermissionController extends Controller
 
   public function show(UserPermissionRequest $request)
   {
-    MyUserInternal::checkScope($this->auth, ['ap-user_permission-view']);
+    MyAdmin::checkScope($this->auth, ['ap-user_permission-view']);
 
     $model_query = User::with([
       "action_permissions", "data_permissions"
@@ -54,7 +54,7 @@ class UserPermissionController extends Controller
 
   public function update(UserPermissionRequest $request)
   {
-    MyUserInternal::checkScope($this->auth, ['ap-user_permission-edit']);
+    MyAdmin::checkScope($this->auth, ['ap-user_permission-edit']);
 
 
     $action_permissions_in = json_decode($request->action_permissions, true);

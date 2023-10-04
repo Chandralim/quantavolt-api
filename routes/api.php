@@ -37,6 +37,8 @@ Route::get('/run', [RunController::class, 'index']);
 
 Route::prefix('internal')->group(function () {
   Route::post('/login', [\App\Http\Controllers\Internal\User\UserAccount::class, 'login']);
+  Route::post('/logout', [\App\Http\Controllers\Internal\User\UserAccount::class, 'logout']);
+
   Route::get('/check_user', [\App\Http\Controllers\Internal\User\UserAccount::class, 'checkUser']);
 
   Route::get('/users', [\App\Http\Controllers\Internal\User\UserController::class, 'index']);
@@ -63,6 +65,35 @@ Route::prefix('internal')->group(function () {
   Route::delete('/member', [\App\Http\Controllers\Internal\MemberController::class, 'delete']);
 });
 
+Route::prefix('main')->group(function () {
+  Route::post('/login', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'login']);
+  Route::post('/logout', [\App\Http\Controllers\Internal\User\MemberAccount::class, 'logout']);
+  Route::get('/check_user', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'checkUser']);
+
+  // Route::get('/members', [\App\Http\Controllers\Main\Member\MemberController::class, 'index']);
+  // Route::get('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'show']);
+  // Route::post('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'store']);
+  // Route::put('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'update']);
+  // Route::delete('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'delete']);
+
+  // Route::get('/action_permissions', [\App\Http\Controllers\Main\Member\MemberPermissionController::class, 'getActionPermissions']);
+  // Route::get('/data_permissions', [\App\Http\Controllers\Main\Member\MemberPermissionController::class, 'getDataPermissions']);
+  // Route::get('/member/permissions', [\App\Http\Controllers\Main\Member\MemberPermissionController::class, 'show']);
+  // Route::put('/member/permissions', [\App\Http\Controllers\Main\Member\MemberPermissionController::class, 'update']);
+
+  Route::get('/dashboard', [\App\Http\Controllers\Main\DashboardController::class, 'index']);
+  // Route::get('/institute', [\App\Http\Controllers\Main\InstituteController::class, 'show']);
+  // Route::post('/institute', [\App\Http\Controllers\Main\InstituteController::class, 'store']);
+  // Route::put('/institute', [\App\Http\Controllers\Main\InstituteController::class, 'update']);
+  // Route::delete('/institute', [\App\Http\Controllers\Main\InstituteController::class, 'delete']);
+
+  // Route::get('/members', [\App\Http\Controllers\Main\MemberController::class, 'index']);
+  // Route::get('/member', [\App\Http\Controllers\Main\MemberController::class, 'show']);
+  // Route::post('/member', [\App\Http\Controllers\Main\MemberController::class, 'store']);
+  // Route::put('/member', [\App\Http\Controllers\Main\MemberController::class, 'update']);
+  // Route::delete('/member', [\App\Http\Controllers\Main\MemberController::class, 'delete']);
+});
+
 Route::get('files/{args?}', function ($args) {
   // $path = __DIR__.'/../../public/files/' . $args;
   $path = __DIR__ . '/../public/files/' . $args;
@@ -79,7 +110,6 @@ Route::get('files/{args?}', function ($args) {
 
 // Route::middleware('auth:api')->group(function () {
 
-//   Route::post('/logout', [UserAccount::class, 'logout']);
 //   Route::put('/change_password', [UserAccount::class, 'change_password']);
 //   Route::put('/change_name', [UserAccount::class, 'change_name']);
 

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Request;
 use App\Exceptions\MyException;
 use App\Model\User;
 
-class MyUserInternal
+class MyAdmin
 {
   public static function user()
   {
@@ -28,15 +28,16 @@ class MyUserInternal
   }
 
 
-  public static function checkScope($user,$allowed_scopes=[],$msg="Forbidden",$return=false){
+  public static function checkScope($user, $allowed_scopes = [], $msg = "Forbidden", $return = false)
+  {
     $scopes = $user->listPermissions();
     $has_value = count(array_intersect($allowed_scopes, $scopes));
     if ($return) {
       return $has_value;
     }
 
-    if($has_value == 0){
-      throw new MyException(["message"=>$msg],403);
+    if ($has_value == 0) {
+      throw new MyException(["message" => $msg], 403);
     }
   }
 
@@ -47,7 +48,8 @@ class MyUserInternal
     return $has_value;
   }
 
-  public static function checkActionScope($user,$allowed_scopes=[]){
+  public static function checkActionScope($user, $allowed_scopes = [])
+  {
     $scopes = $user->action_permissions->pluck("in_one_line")->toArray();
     $has_value = count(array_intersect($allowed_scopes, $scopes));
     return $has_value;

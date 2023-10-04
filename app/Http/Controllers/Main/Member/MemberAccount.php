@@ -1,32 +1,30 @@
 <?php
 
-namespace App\Http\Controllers\Internal\User;
+namespace App\Http\Controllers\Main\Member;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Exceptions\MyException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-use App\Model\Internal\User;
+use App\Model\Main\Member;
 use App\Helpers\MyLib;
-use App\Helpers\MyAdmin;
+use App\Helpers\MyMember;
 
-class UserAccount extends Controller
+class MemberAccount extends Controller
 {
   public function login(Request $request)
   {
-    $request["email"] = strtolower($request->email);
+    $request["username"] = strtolower($request->username);
     $rules = [
-      'email' => 'required|email|exists:\App\Model\Internal\User,email',
+      'username' => 'required|exists:\App\Model\Main\Member,username',
       'password' => "required|min:8",
     ];
 
     $messages = [
-      'email.required' => 'Email tidak boleh kosong',
-      'email.exists' => 'Email tidak terdaftar',
-      'email.email' => 'Format Email salah',
+      'username.required' => 'Nama Pengguna tidak boleh kosong',
+      'username.exists' => 'Nama Pengguna tidak terdaftar',
       'password.required' => 'Kata Sandi tidak boleh kosong',
       'password.min' => 'Kata Sandi minimal 8 Karakter',
     ];
@@ -37,16 +35,24 @@ class UserAccount extends Controller
       throw new ValidationException($validator);
     }
 
-    $email = $request->email;
+    $username = $request->username;
     $password = $request->password;
 
-    $admin = User::where("email", $email)->first();
+    $admin = Member::where("username", $username)->first();
+
+    if ($admin->password == null) {
+      return response()->json([
+        "message" => "Kata Kunci belum di atur, Hubungi Pusat"
+      ], 403);
+    }
 
     if ($admin && $admin->can_login == false) {
       return response()->json([
-        "message" => "Izin Masuk Tidak Diberikan"
+        "message" => "Izin Masuk Tidak Diberikan , Hubungi Pusat"
       ], 403);
     }
+
+
 
     if (Hash::check($password, $admin->password)) {
       $token = $admin->generateToken();
@@ -65,7 +71,7 @@ class UserAccount extends Controller
 
   public function logout(Request $request)
   {
-    $admin = MyAdmin::user();
+    $admin = MyMember::user();
     $admin->token = "";
     $admin->updated_at = date("Y-m-d H:i:s");
     $admin->save();
@@ -77,21 +83,22 @@ class UserAccount extends Controller
 
   public function checkUser(Request $request)
   {
-    $p_user = MyAdmin::user();
+    $p_user = MyMember::user();
     return response()->json([
       "message" => "Tampilkan data user",
       "user" => [
         // "id"=>$p_user->id,
+        "usename" => $p_user->username,
         "email" => $p_user->email,
         // "scope"=>($p_user->role && count($p_user->role->permissions)>0) ? $p_user->role->permissions->pluck('name') : [],
-        "scopes" => $p_user->listPermissions()
+        // "roles" => $p_user->listPermissions()
       ]
     ], 200);
   }
 
   public function change_password(Request $request)
   {
-    $admin = MyAdmin::user();
+    $admin = MyMember::user();
 
     $rules = [
       'old_password' => 'required|min:8|max:255',
@@ -138,7 +145,7 @@ class UserAccount extends Controller
 
   public function change_name(Request $request)
   {
-    $admin = MyAdmin::user();
+    $admin = MyMember::user();
 
     $rules = [
       'name' => 'required|max:255',

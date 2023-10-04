@@ -21,12 +21,12 @@ class MemberController extends Controller
   private $auth;
   public function __construct(Request $request)
   {
-    $this->auth = \App\Helpers\MyUserInternal::user();
+    $this->auth = \App\Helpers\MyAdmin::user();
   }
 
   public function index(Request $request)
   {
-    \App\Helpers\MyUserInternal::checkScope($this->auth, ['ap-member-view']);
+    \App\Helpers\MyAdmin::checkScope($this->auth, ['ap-member-view']);
 
     //======================================================================================================
     // Pembatasan Data hanya memerlukan limit dan offset
