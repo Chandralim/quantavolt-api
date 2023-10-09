@@ -32,7 +32,7 @@ class MemberController extends Controller
     // Pembatasan Data hanya memerlukan limit dan offset
     //======================================================================================================
 
-    $limit = 250; // Limit +> Much Data
+    $limit = 30; // Limit +> Much Data
     if (isset($request->limit)) {
       if ($request->limit <= 250) {
         $limit = $request->limit;

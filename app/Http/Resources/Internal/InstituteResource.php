@@ -18,6 +18,7 @@ class InstituteResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id'            => $this->id,
+            'link_name'      => $this->link_name,
             'name'      => $this->name,
             'address'      => $this->address,
             'contact_number'      => $this->contact_number,

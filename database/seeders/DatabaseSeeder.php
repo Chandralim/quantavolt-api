@@ -15,15 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // InternalUserSeeder::class,
-            InternalActionPermissionSeeder::class,
+            // InternalActionPermissionSeeder::class,
             // InternalDataPermissionSeeder::class,
-            InternalUserPermissionSeeder::class,
+            // InternalUserPermissionSeeder::class,
             // UnitSeeder::class,
             // QuotationItemSeeder::class,
             // ItemSeeder::class,
             // CustomerSeeder::class,
             // ProjectSeeder::class,
             // DbSeeder20230907::class,
+            FakeY::class,
         ]);
     }
 }

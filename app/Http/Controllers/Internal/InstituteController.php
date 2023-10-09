@@ -182,7 +182,7 @@ class InstituteController extends Controller
     $model_query = Institute::with([
       'internal_marketer',
       'members' => function ($q) {
-        $q->wherePivot('role', 'Operator');
+        $q->wherePivot('role', 'operator');
         $q->where(function ($q2) {
           $q2->whereNotNull("member_institutes.internal_created_by")
             ->orWhereNotNull("member_institutes.internal_updated_by");
@@ -205,10 +205,18 @@ class InstituteController extends Controller
       ], 422);
     }
 
+    $link_name = MyLib::textToLink($request->name);
+    if (Institute::where("link_name", $link_name)->first()) {
+      return response()->json([
+        "name" => ["Maaf Nama Telah Digunakan"]
+      ], 422);
+    }
+
     DB::beginTransaction();
     try {
       $model_query             = new Institute();
-      $model_query->name      = trim($request->name);
+      $model_query->name      = $request->name;
+      $model_query->link_name = $link_name;
       $model_query->address = $request->address;
       $model_query->contact_number   = $request->contact_number;
       $model_query->contact_person       = $request->contact_person;
@@ -226,7 +234,7 @@ class InstituteController extends Controller
         \App\Model\Main\MemberInstitute::insert([
           "member_id" => $operator_member_id,
           "institute_id" => $model_query->id,
-          "role" => "Operator",
+          "role" => "operator",
           "internal_created_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
           "internal_created_by" => $this->auth->id,
           "internal_updated_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
@@ -282,11 +290,19 @@ class InstituteController extends Controller
       ], 422);
     }
 
+    $link_name = MyLib::textToLink($request->name);
+    if (Institute::where("id", "!=", $request->id)->where("link_name", $link_name)->first()) {
+      return response()->json([
+        "name" => ["Maaf Nama Telah Digunakan"]
+      ], 422);
+    }
+
 
     DB::beginTransaction();
     try {
       $model_query              = Institute::find($request->id);
-      $model_query->name       = trim($request->name);
+      $model_query->name       = MyLib::beOneSpaces($request->name);
+      $model_query->link_name = $link_name;
       $model_query->address    = $request->address;
       $model_query->contact_number        = $request->contact_number;
       $model_query->contact_person = $request->contact_person;
@@ -299,7 +315,7 @@ class InstituteController extends Controller
 
       $operator_member_id = $request->operator_member_id;
 
-      $mdl_member_institute = \App\Model\Main\MemberInstitute::where("role", "Operator")
+      $mdl_member_institute = \App\Model\Main\MemberInstitute::where("role", "operator")
         ->where("institute_id", $model_query->id)
         ->where(function ($q) {
           $q->whereNotNull("internal_created_by")->whereNotNull("internal_updated_by");
@@ -310,20 +326,23 @@ class InstituteController extends Controller
       if ($member_institute && ($operator_member_id == null || $operator_member_id !== $member_institute->member_id))
         $mdl_member_institute->delete();
 
-      if ($operator_member_id !== null && $operator_member_id !== $member_institute->member_id) {
 
+      if ((!$member_institute && $operator_member_id !== null) || ($member_institute && $operator_member_id !== null && $operator_member_id !== $member_institute->member_id))
         \App\Model\Main\MemberInstitute::insert([
           "member_id" => $operator_member_id,
           "institute_id" => $model_query->id,
-          "role" => "Operator",
+          "role" => "operator",
           "internal_created_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
           "internal_created_by" => $this->auth->id,
           "internal_updated_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
           "internal_updated_by" => $this->auth->id,
         ]);
-      } elseif ($operator_member_id !== null && $operator_member_id == $member_institute->member_id) {
+
+
+
+      if ($member_institute && $operator_member_id !== null && $operator_member_id == $member_institute->member_id) {
         \App\Model\Main\MemberInstitute::where("member_id", $operator_member_id)
-          ->where("role", "Operator")
+          ->where("role", "operator")
           ->where("institute_id", $model_query->id)
           ->update([
             "internal_created_at" => MyLib::manualMillis(date("Y-m-d H:i:s")),
@@ -332,6 +351,7 @@ class InstituteController extends Controller
             "internal_updated_by" => $this->auth->id,
           ]);
       }
+
 
       // if($request->employee_no){
       //   //Check apakah di update dengan data yang sama
@@ -371,9 +391,9 @@ class InstituteController extends Controller
           "message" => $e->getMessage(),
         ], 400);
       }
-      return response()->json([
-        "message" => $e->getMessage(),
-      ], 400);
+      // return response()->json([
+      //   "message" => $e->getLine(),
+      // ], 400);
       return response()->json([
         "message" => "Proses ubah data gagal"
       ], 400);

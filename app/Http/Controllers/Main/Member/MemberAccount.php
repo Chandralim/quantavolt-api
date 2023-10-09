@@ -84,12 +84,14 @@ class MemberAccount extends Controller
   public function checkUser(Request $request)
   {
     $p_user = MyMember::user();
+    $model_query = \App\Model\Main\MemberInstitute::where("member_id", $p_user->id)->with('institute')->get();
     return response()->json([
       "message" => "Tampilkan data user",
       "user" => [
         // "id"=>$p_user->id,
         "usename" => $p_user->username,
         "email" => $p_user->email,
+        "institutes" => $model_query,
         // "scope"=>($p_user->role && count($p_user->role->permissions)>0) ? $p_user->role->permissions->pluck('name') : [],
         // "roles" => $p_user->listPermissions()
       ]

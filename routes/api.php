@@ -38,6 +38,7 @@ Route::get('/run', [RunController::class, 'index']);
 Route::prefix('internal')->group(function () {
   Route::post('/login', [\App\Http\Controllers\Internal\User\UserAccount::class, 'login']);
   Route::post('/logout', [\App\Http\Controllers\Internal\User\UserAccount::class, 'logout']);
+  Route::put('/change_password', [\App\Http\Controllers\Internal\User\UserAccount::class, 'change_password']);
 
   Route::get('/check_user', [\App\Http\Controllers\Internal\User\UserAccount::class, 'checkUser']);
 
@@ -69,6 +70,7 @@ Route::prefix('main')->group(function () {
   Route::post('/login', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'login']);
   Route::post('/logout', [\App\Http\Controllers\Internal\User\MemberAccount::class, 'logout']);
   Route::get('/check_user', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'checkUser']);
+  Route::put('/change_password', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'change_password']);
 
   // Route::get('/members', [\App\Http\Controllers\Main\Member\MemberController::class, 'index']);
   // Route::get('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'show']);

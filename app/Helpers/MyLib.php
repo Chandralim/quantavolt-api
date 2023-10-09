@@ -33,15 +33,16 @@ class MyLib
   }
 
 
-  public static function checkScope($user,$allowed_scopes=[],$msg="Forbidden",$return=false){
+  public static function checkScope($user, $allowed_scopes = [], $msg = "Forbidden", $return = false)
+  {
     $scopes = $user->listPermissions();
     $has_value = count(array_intersect($allowed_scopes, $scopes));
     if ($return) {
       return $has_value;
     }
 
-    if($has_value == 0){
-      throw new MyException(["message"=>$msg],403);
+    if ($has_value == 0) {
+      throw new MyException(["message" => $msg], 403);
     }
   }
 
@@ -52,14 +53,30 @@ class MyLib
     return $has_value;
   }
 
-  public static function checkActionScope($user,$allowed_scopes=[]){
+  public static function checkActionScope($user, $allowed_scopes = [])
+  {
     $scopes = $user->action_permissions->pluck("in_one_line")->toArray();
     $has_value = count(array_intersect($allowed_scopes, $scopes));
     return $has_value;
   }
 
-  public static function emptyStrToNull($var) {
-    return $var=="" ? null : $var;
+  public static function emptyStrToNull($var)
+  {
+    return $var == "" ? null : $var;
+  }
+
+  public static function beOneSpaces($var)
+  {
+    $var = trim($var);
+    $var = preg_replace('/\s+/', ' ', $var);
+    return $var;
+  }
+
+  public static function textToLink($var)
+  {
+    $var = strtolower(self::beOneSpaces($var));
+    $var = str_replace(' ', '_', $var);
+    return $var;
   }
 
 
@@ -167,11 +184,12 @@ class MyLib
     return round((float)($date->format("U") . "." . $date->format("U")) * 1000);
   }
 
-  public static function utcMillis($strDate){
+  public static function utcMillis($strDate)
+  {
     // date local to utc millis
     $date = new \DateTime($strDate);
     $date->sub(new \DateInterval('PT7H'));
-    return round((float)($date->format("U").".".$date->format("v"))*1000);
+    return round((float)($date->format("U") . "." . $date->format("v")) * 1000);
   }
 
 
