@@ -19,6 +19,7 @@ class MemberInstituteResource extends JsonResource
         return [
             'member_id' => $this->member_id,
             'institute_id' => $this->institute_id,
+            'member' => new MemberResource($this->whenLoaded('member')),
             'institute' => new InstituteResource($this->whenLoaded('institute')),
             'role' => $this->role,
         ];

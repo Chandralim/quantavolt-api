@@ -72,6 +72,12 @@ Route::prefix('main')->group(function () {
   Route::get('/check_user', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'checkUser']);
   Route::put('/change_password', [\App\Http\Controllers\Main\Member\MemberAccount::class, 'change_password']);
 
+
+  Route::get('/operator/member_institutes', [\App\Http\Controllers\Main\Operator\MemberInstituteController::class, 'index']);
+  Route::post('/operator/member_institutes', [\App\Http\Controllers\Main\Operator\MemberInstituteController::class, 'store']);
+  Route::delete('/operator/member_institutes', [\App\Http\Controllers\Main\Operator\MemberInstituteController::class, 'delete']);
+
+  Route::get('/operator/members', [\App\Http\Controllers\Main\Operator\MemberController::class, 'index']);
   // Route::get('/members', [\App\Http\Controllers\Main\Member\MemberController::class, 'index']);
   // Route::get('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'show']);
   // Route::post('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'store']);
