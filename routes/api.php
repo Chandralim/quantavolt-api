@@ -78,6 +78,13 @@ Route::prefix('main')->group(function () {
   Route::delete('/operator/member_institutes', [\App\Http\Controllers\Main\Operator\MemberInstituteController::class, 'delete']);
 
   Route::get('/operator/members', [\App\Http\Controllers\Main\Operator\MemberController::class, 'index']);
+
+  Route::get('/operator/class_rooms', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'index']);
+  Route::get('/operator/class_room', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'show']);
+  Route::post('/operator/class_room', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'store']);
+  Route::put('/operator/class_room', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'update']);
+  Route::delete('/operator/class_room', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'delete']);
+
   // Route::get('/members', [\App\Http\Controllers\Main\Member\MemberController::class, 'index']);
   // Route::get('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'show']);
   // Route::post('/member', [\App\Http\Controllers\Main\Member\MemberController::class, 'store']);
@@ -95,11 +102,6 @@ Route::prefix('main')->group(function () {
   // Route::put('/institute', [\App\Http\Controllers\Main\InstituteController::class, 'update']);
   // Route::delete('/institute', [\App\Http\Controllers\Main\InstituteController::class, 'delete']);
 
-  // Route::get('/members', [\App\Http\Controllers\Main\MemberController::class, 'index']);
-  // Route::get('/member', [\App\Http\Controllers\Main\MemberController::class, 'show']);
-  // Route::post('/member', [\App\Http\Controllers\Main\MemberController::class, 'store']);
-  // Route::put('/member', [\App\Http\Controllers\Main\MemberController::class, 'update']);
-  // Route::delete('/member', [\App\Http\Controllers\Main\MemberController::class, 'delete']);
 });
 
 Route::get('files/{args?}', function ($args) {

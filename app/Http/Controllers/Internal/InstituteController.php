@@ -222,9 +222,9 @@ class InstituteController extends Controller
       $model_query->contact_person       = $request->contact_person;
       $model_query->active_until  = $request->active_until;
       $model_query->internal_marketer_by = $marketer_id;
-      $model_query->created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->internal_created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->internal_created_by = $this->auth->id;
-      $model_query->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->internal_updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->internal_updated_by = $this->auth->id;
       $model_query->save();
 
@@ -308,7 +308,7 @@ class InstituteController extends Controller
       $model_query->contact_person = $request->contact_person;
       $model_query->active_until   = $request->active_until;
       $model_query->internal_marketer_by = $marketer_id;
-      $model_query->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->internal_updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
       $model_query->internal_updated_by = $this->auth->id;
       $model_query->save();
 

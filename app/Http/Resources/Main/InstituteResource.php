@@ -24,9 +24,9 @@ class InstituteResource extends JsonResource
             'contact_person'      => $this->contact_person,
             'active_until' => $this->active_until ?? '',
             'internal_marketer_by' => $this->internal_marketer_by,
-            'created_at' => $this->created_at,
+            'internal_created_at' => $this->internal_created_at,
             'internal_created_by' => $this->internal_created_by,
-            'updated_at' => $this->updated_at,
+            'internal_updated_at' => $this->internal_updated_at,
             'internal_updated_by' => $this->internal_updated_by,
         ];
     }

@@ -33,7 +33,7 @@ class MemberInstituteController extends Controller
 
         $link_name = $request->link_name;
         MyMember::checkRole($this->auth, $link_name, ['operator']);
-        $group = $request->group;
+        $role = $request->role;
 
         //======================================================================================================
         // Pembatasan Data hanya memerlukan limit dan offset
@@ -94,7 +94,7 @@ class MemberInstituteController extends Controller
             //   $model_query = $model_query->orderBy("role", $sort_lists["role"]);
             // }
         } else {
-            if ($group == "all") {
+            if ($role == "all") {
                 $model_query = $model_query->orderBy('created_at', 'DESC');
             } else {
                 $model_query = $model_query->orderBy('member_id', 'ASC');
@@ -115,10 +115,26 @@ class MemberInstituteController extends Controller
             }
 
             if (isset($like_lists["username"])) {
-                $model_query = $model_query->orWhere("member_id", function ($q) use ($like_lists, $group) {
+                $model_query = $model_query->orWhere("member_id", function ($q) use ($like_lists) {
                     $q->from('members');
                     $q->select("id");
                     $q->where("username", "ilike", $like_lists["username"]);
+                });
+            }
+
+            if (isset($like_lists["email"])) {
+                $model_query = $model_query->orWhere("member_id", function ($q) use ($like_lists) {
+                    $q->from('members');
+                    $q->select("id");
+                    $q->where("email", "ilike", $like_lists["email"]);
+                });
+            }
+
+            if (isset($like_lists["fullname"])) {
+                $model_query = $model_query->orWhere("member_id", function ($q) use ($like_lists) {
+                    $q->from('members');
+                    $q->select("id");
+                    $q->where("fullname", "ilike", $like_lists["fullname"]);
                 });
             }
 
@@ -137,8 +153,8 @@ class MemberInstituteController extends Controller
             // }
         }
 
-        if ($group != 'all')
-            $model_query = $model_query->where("role", $group);
+        if ($role != 'all')
+            $model_query = $model_query->where("role", $role);
 
         // ==============
         // Model Filter

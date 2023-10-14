@@ -26,7 +26,8 @@ class FakeY extends Seeder
 
             // insert data ke table pegawai menggunakan Faker
             DB::table('members')->insert([
-                'username' => $faker->name,
+                'username' => $faker->username,
+                'fullname' => $faker->name,
             ]);
         }
     }

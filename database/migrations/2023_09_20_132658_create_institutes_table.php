@@ -14,8 +14,8 @@ class CreateInstitutesTable extends Migration
     public function up()
     {
         Schema::create('institutes', function (Blueprint $table) {
-            $table->unsignedBigInteger('created_at');
-            $table->unsignedBigInteger('updated_at');
+            $table->unsignedBigInteger('internal_created_at')->nullable();
+            $table->unsignedBigInteger('internal_updated_at')->nullable();
             $table->id();
             $table->string('link_name')->unique();
             $table->string('name')->unique();
@@ -24,8 +24,8 @@ class CreateInstitutesTable extends Migration
             $table->string('contact_person', 50);
             $table->unsignedBigInteger('active_until')->nullable();
             $table->foreignId('internal_marketer_by')->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('internal_created_by')->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('internal_updated_by')->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('internal_created_by')->nullable()->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('internal_updated_by')->nullable()->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 
