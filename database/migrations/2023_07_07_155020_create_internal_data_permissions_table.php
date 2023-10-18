@@ -13,6 +13,8 @@ class CreateInternalDataPermissionsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('internal.data_permissions');
+
         Schema::create('internal.data_permissions', function (Blueprint $table) {
             $table->id();
             $table->string('status');

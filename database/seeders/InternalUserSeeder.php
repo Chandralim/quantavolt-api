@@ -22,8 +22,8 @@ class InternalUserSeeder extends Seeder
             'password' => Hash::make('chandra123'),
             'can_login' => true,
             'role' => 'Owner',
-            'created_at' => \App\Helpers\MyLib::manualMillis(date("Y-m-d H:i:s")),
-            'updated_at' => \App\Helpers\MyLib::manualMillis(date("Y-m-d H:i:s")),
+            'internal_created_at' => \App\Helpers\MyLib::manualMillis(date("Y-m-d H:i:s")),
+            'internal_updated_at' => \App\Helpers\MyLib::manualMillis(date("Y-m-d H:i:s")),
             // 'temp_at'=>date("Y-m-d H:i:s"),
         ]);
     }

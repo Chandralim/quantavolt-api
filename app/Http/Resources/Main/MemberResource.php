@@ -20,6 +20,7 @@ class MemberResource extends JsonResource
             'id'                  => $this->id,
             'username'            => $this->username ?? "",
             'email'               => $this->email ?? "",
+            'phone_number'               => $this->phone_number ?? "",
             'fullname'            => $this->fullname ?? "",
             'can_login'           => $this->can_login ? 1 : 0,
             // 'photo'               => $request->getHttpHost() . "/" . $this->photo ?? "",

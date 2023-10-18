@@ -13,15 +13,16 @@ class CreateInternalUserPermissionsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('internal.user_permissions');
+
         Schema::create('internal.user_permissions', function (Blueprint $table) {
             $table->foreignId('user_id')->references('id')->on('internal.users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('action_permission_id')->nullable()->references('id')->on('internal.action_permissions')->onDelete('restrict')->onUpdate('cascade');
             $table->foreignId('data_permission_id')->nullable()->references('id')->on('internal.data_permissions')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('created_by')->nullable()->references('id')->on('internal.users')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('internal_created_at')->nullable();
+            $table->foreignId('internal_created_by')->nullable()->references('id')->on('internal.users')->onDelete('cascade')->onUpdate('cascade');
             // $table->foreignId('updated_by')->nullable()->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             // $table->timestamp('created_at')->nullable();
-            $table->unsignedBigInteger('created_at')->nullable();
-
         });
     }
 

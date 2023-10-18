@@ -235,6 +235,7 @@ class MemberController extends Controller
       $model_query                      = new Member();
       $model_query->username            = $request->username;
       $model_query->email               = MyLib::emptyStrToNull($request->email);
+      $model_query->phone_number        = MyLib::emptyStrToNull($request->phone_number);
       $model_query->fullname            = MyLib::emptyStrToNull($request->fullname);
       if ($password)
         $model_query->password          = bcrypt($password);
@@ -321,8 +322,9 @@ class MemberController extends Controller
       }
 
       $model_query->username            = $request->username;
-      $model_query->email               = $request->email;
-      $model_query->fullname            = $request->fullname;
+      $model_query->email               = MyLib::emptyStrToNull($request->email);
+      $model_query->phone_number        = MyLib::emptyStrToNull($request->phone_number);
+      $model_query->fullname            = MyLib::emptyStrToNull($request->fullname);
       if ($password)
         $model_query->password          = bcrypt($password);
       $model_query->can_login           = $request->can_login;

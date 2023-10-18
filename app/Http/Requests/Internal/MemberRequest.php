@@ -42,6 +42,7 @@ class MemberRequest extends FormRequest
             $rules['password'] = 'nullable|min:8';
             $rules['can_login'] = 'required|in:0,1';
             $rules['photo'] = 'nullable|image|mimes:jpeg|max:2048';
+            $rules['phone_number'] = 'nullable|min:10|max:15';
         }
         return $rules;
     }

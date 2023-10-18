@@ -117,8 +117,8 @@ class UserPermissionController extends Controller
         $child_query = new \App\Model\Internal\UserPermission();
         $child_query->user_id              = $model_query->id;
         $child_query->action_permission_id = $value['id'];
-        $model_query->created_by           = $this->auth->id;
-        $model_query->created_at           = date("Y-m-d H:i:s");
+        $model_query->internal_created_by           = $this->auth->id;
+        $model_query->internal_created_at           = date("Y-m-d H:i:s");
         $child_query->save();
       }
       $ids = [];
@@ -134,8 +134,8 @@ class UserPermissionController extends Controller
         $child_query                      = new \App\Model\Internal\UserPermission();
         $child_query->user_id             = $model_query->id;
         $child_query->data_permission_id  = $value['id'];
-        $model_query->created_by          = $this->auth->id;
-        $model_query->created_at          = date("Y-m-d H:i:s");
+        $model_query->internal_created_by          = $this->auth->id;
+        $model_query->internal_created_at          = date("Y-m-d H:i:s");
         $child_query->save();
       }
 

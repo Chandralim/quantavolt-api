@@ -14,23 +14,23 @@ class CreateInternalUsersTable extends Migration
     public function up()
     {
         Schema::create('internal.users', function (Blueprint $table) {
-            $table->unsignedBigInteger('created_at')->nullable();
-            $table->unsignedBigInteger('updated_at')->nullable();
+            $table->unsignedBigInteger('internal_created_at')->nullable();
+            $table->unsignedBigInteger('internal_updated_at')->nullable();
             $table->id();
             $table->string('email')->unique();
             $table->string('fullname')->nullable();
             $table->string('password');
-            $table->string('role',50);
+            $table->string('role', 50);
             $table->boolean('can_login')->default(false);
             // $table->unsignedBigInteger('employee_no')->nullable();
             $table->text('api_token')->nullable();
-            $table->foreignId('created_by')->nullable()->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('updated_by')->nullable()->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('internal_created_by')->nullable()->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('internal_updated_by')->nullable()->references('id')->on('internal.users')->onDelete('restrict')->onUpdate('cascade');
             // $table->timestamps();
 
             // $table->unsignedBigInteger('employee_id');
             // $table->foreign('employee_id')->references('id')->on('employees');
-            
+
             // $table->timestamp('email_verified_at')->nullable();
 
 
@@ -54,6 +54,5 @@ class CreateInternalUsersTable extends Migration
             $table->dropForeign(['updated_by']);
         });
         Schema::dropIfExists('internal.users');
-
     }
 }

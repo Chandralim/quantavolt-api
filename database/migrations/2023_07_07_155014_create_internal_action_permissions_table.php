@@ -13,6 +13,8 @@ class CreateInternalActionPermissionsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('internal.action_permissions');
+
         Schema::create('internal.action_permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name');

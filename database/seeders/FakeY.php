@@ -17,6 +17,7 @@ class FakeY extends Seeder
     public function run()
     {
 
+        DB::table('members')->truncate();
 
         // DB::table('members')->insert([
         //     'username' => "chandra888lim@gmail.com",
@@ -28,6 +29,10 @@ class FakeY extends Seeder
             DB::table('members')->insert([
                 'username' => $faker->username,
                 'fullname' => $faker->name,
+                'internal_created_by' => 1,
+                'internal_updated_by' => 1,
+                'internal_created_at' => \App\Helpers\MyLib::manualMillis(date("Y-m-d H:i:s")),
+                'internal_updated_at' => \App\Helpers\MyLib::manualMillis(date("Y-m-d H:i:s")),
             ]);
         }
     }

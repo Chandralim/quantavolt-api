@@ -78,15 +78,13 @@ class Member extends Authenticatable
   //   return array_merge($ap, $dp);
   // }
 
-  // public function internal_updator()
-  // {
-  //   return $this->hasOne(\App\Model\Internal\User::class, 'id', "internal_updated_by");
-  // }
+  public function internal_updator()
+  {
+    return $this->hasOne(\App\Model\Internal\User::class, 'id', "internal_updated_by");
+  }
 
-  // public function internal_creator()
-  // {
-  //   return $this->hasOne(\App\Model\Internal\User::class, 'id', "internal_created_by");
-  // }
-
-
+  public function internal_creator()
+  {
+    return $this->hasOne(\App\Model\Internal\User::class, 'id', "internal_created_by");
+  }
 }

@@ -77,8 +77,8 @@ class UserController extends Controller
         $model_query = $model_query->orderBy("id", $sort_lists["id"]);
       }
 
-      if (isset($sort_lists["created_at"])) {
-        $model_query = $model_query->orderBy("created_at", $sort_lists["created_at"]);
+      if (isset($sort_lists["internal_created_at"])) {
+        $model_query = $model_query->orderBy("internal_created_at", $sort_lists["internal_created_at"]);
       }
 
 
@@ -207,10 +207,10 @@ class UserController extends Controller
       $model_query->fullname   = $request->fullname;
       $model_query->role       = $request->role;
       $model_query->can_login  = $request->can_login;
-      $model_query->created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
-      $model_query->created_by = $this->auth->id;
-      $model_query->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
-      $model_query->updated_by = $this->auth->id;
+      $model_query->internal_created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->internal_created_by = $this->auth->id;
+      $model_query->internal_updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->internal_updated_by = $this->auth->id;
       $model_query->save();
       // if($request->employee_no){
       //   $employee = Employee::where("no",$request->employee_no)->first();
@@ -264,8 +264,8 @@ class UserController extends Controller
       $model_query->role        = $request->role;
       // $model_query->employee_no = $request->employee_no;
       $model_query->can_login   = $request->can_login;
-      $model_query->updated_at  = MyLib::manualMillis(date("Y-m-d H:i:s"));
-      $model_query->updated_by  = $this->auth->id;
+      $model_query->internal_updated_at  = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->internal_updated_by  = $this->auth->id;
       $model_query->save();
 
 

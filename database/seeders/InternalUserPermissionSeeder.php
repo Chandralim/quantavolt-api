@@ -22,7 +22,7 @@ class InternalUserPermissionSeeder extends Seeder
             DB::table('internal.user_permissions')->insert([
                 "user_id" => 1,
                 "action_permission_id" => $value->id,
-                "created_by" => 1,
+                "internal_created_by" => 1,
             ]);
         }
 
