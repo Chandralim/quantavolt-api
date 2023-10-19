@@ -26,7 +26,7 @@ class MemberRequest extends FormRequest
     {
         $rules = [];
         if (request()->isMethod('post')) {
-            $rules['username'] = 'required|max:255|unique:App\Model\Main\Member,username';
+            $rules['username'] = 'required|max:255|regex:/^\S*$/|unique:App\Model\Main\Member,username';
             $rules['email'] = 'nullable|email|max:255|unique:App\Model\Main\Member,email';
         }
         if (request()->isMethod('get')) {

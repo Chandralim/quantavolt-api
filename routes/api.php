@@ -78,6 +78,7 @@ Route::prefix('main')->group(function () {
   Route::delete('/operator/member_institutes', [\App\Http\Controllers\Main\Operator\MemberInstituteController::class, 'delete']);
 
   Route::get('/operator/members', [\App\Http\Controllers\Main\Operator\MemberController::class, 'index']);
+  Route::post('/operator/member', [\App\Http\Controllers\Main\Operator\MemberController::class, 'store']);
 
   Route::get('/operator/class_rooms', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'index']);
   Route::get('/operator/class_room', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'show']);

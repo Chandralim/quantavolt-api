@@ -9,6 +9,9 @@ use App\Helpers\MyLib;
 use App\Exceptions\MyException;
 use Illuminate\Validation\ValidationException;
 use App\Model\Main\Member;
+use App\Model\Main\Institute;
+use App\Model\Main\MemberInstitute;
+
 use App\Http\Resources\Main\MemberResource;
 use App\Http\Requests\Main\MemberRequest;
 use Exception;
@@ -198,79 +201,81 @@ class MemberController extends Controller
   //   ], 200);
   // }
 
-  // public function store(MemberRequest $request)
-  // {
-  //   MyLib::checkRole($this->auth, ['ap-member-add']);
+  public function store(MemberRequest $request)
+  {
 
-  //   $can_login = $request->can_login;
-  //   $password = $request->password;
+    $link_name = $request->link_name;
 
-  //   if ($can_login == 1 && $password == null) {
-  //     return response()->json([
-  //       "password" => ["Password Perlu diisi"],
-  //     ], 422);
-  //   }
+    \App\Helpers\MyMember::checkRole($this->auth, $link_name, ['operator']);
+    $institute = Institute::where("link_name", $link_name)->first();
+
+    DB::beginTransaction();
+    try {
+      $model_query                      = new Member();
+      $model_query->username            = $request->username;
+      $model_query->email               = MyLib::emptyStrToNull($request->email);
+      $model_query->fullname            = MyLib::emptyStrToNull($request->fullname);
+      $model_query->phone_number        = MyLib::emptyStrToNull($request->phone_number);
+
+      if ($request->password)
+        $model_query->password          = bcrypt($request->password);
+      $model_query->can_login           = $request->can_login;
+
+      $model_query->created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->created_by = $this->auth->id;
+      $model_query->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->updated_by = $this->auth->id;
+      $model_query->save();
+
+      $member = Member::where('id', $model_query->id)->first();
+      $member_institute = MemberInstitute::where("institute_id", $institute->id)->where("member_id", $model_query->id)->where("role", $request->create_as)->first();
+      if ($member_institute) {
+        return response()->json([
+          "exist" => 1,
+          "message" => "Anggota sudah terdaftar sebelumnya",
+          "member" => new MemberResource($member)
+        ], 200);
+      }
+
+      $model_query2                    = new MemberInstitute();
+      $model_query2->member_id         = $member->id;
+      $model_query2->institute_id      = $institute->id;
+      $model_query2->role              = $request->create_as;
+      $model_query2->created_at        = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query2->created_by        = $this->auth->id;
+      $model_query2->updated_at        = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query2->updated_by        = $this->auth->id;
+      $model_query2->save();
+
+      DB::commit();
+      return response()->json([
+        "exist" => 0,
+        "message" => "Proses tambah data berhasil",
+        "member" => new MemberResource($member)
+
+      ], 200);
 
 
+      // DB::commit();
+      // return response()->json([
+      //   "message" => "Proses tambah data berhasil",
+      // ], 200);
+    } catch (\Exception $e) {
+      DB::rollback();
 
+      if ($e->getCode() == 1) {
+        return response()->json([
+          "message" => $e->getMessage(),
+        ], 400);
+      }
 
-  //   DB::beginTransaction();
-  //   try {
+      return response()->json([
+        // "message" => "Proses tambah data gagal",
+        "message" => $e->getMessage(),
 
-  //     $new_image = $request->file('photo');
-  //     if ($new_image != null) {
-  //       $date = new \DateTime();
-  //       $timestamp = $date->format("Y-m-d H:i:s.v");
-  //       $ext = $new_image->extension();
-  //       $file_name = md5(preg_replace('/( |-|:)/', '', $timestamp)) . '.' . $ext;
-  //       $location = "files/members/{$file_name}";
-  //       try {
-  //         ini_set('memory_limit', '256M');
-  //         Image::make($new_image)->save(files_path($location));
-  //       } catch (\Exception $e) {
-  //         throw new Exception($e->getMessage());
-  //         throw new Exception("Simpan Foto Gagal");
-  //       }
-  //     } else {
-  //       $location = null;
-  //     }
-
-
-  //     $model_query                      = new Member();
-  //     $model_query->username            = $request->username;
-  //     $model_query->email               = MyLib::emptyStrToNull($request->email);
-  //     $model_query->fullname            = MyLib::emptyStrToNull($request->fullname);
-  //     if ($password)
-  //       $model_query->password          = bcrypt($password);
-  //     $model_query->can_login           = $request->can_login;
-  //     $model_query->photo               = $location;
-
-  //     $model_query->internal_created_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
-  //     $model_query->internal_created_by = $this->auth->id;
-  //     $model_query->internal_updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
-  //     $model_query->internal_updated_by = $this->auth->id;
-  //     $model_query->save();
-
-  //     DB::commit();
-  //     return response()->json([
-  //       "message" => "Proses tambah data berhasil",
-  //     ], 200);
-  //   } catch (\Exception $e) {
-  //     DB::rollback();
-
-  //     if ($e->getCode() == 1) {
-  //       return response()->json([
-  //         "message" => $e->getMessage(),
-  //       ], 400);
-  //     }
-
-  //     return response()->json([
-  //       // "message" => "Proses tambah data gagal",
-  //       "message" => $e->getMessage(),
-
-  //     ], 400);
-  //   }
-  // }
+      ], 400);
+    }
+  }
 
   // public function update(MemberRequest $request)
   // {
