@@ -277,89 +277,45 @@ class MemberController extends Controller
     }
   }
 
-  // public function update(MemberRequest $request)
-  // {
-  //   MyLib::checkRole($this->auth, ['ap-member-edit']);
+  public function update(MemberRequest $request)
+  {
+    $link_name = $request->link_name;
 
-  //   $can_login = $request->can_login;
-  //   $password = $request->password;
-  //   $photo_preview = $request->photo_preview;
+    \App\Helpers\MyMember::checkRole($this->auth, $link_name, ['operator']);
 
-  //   DB::beginTransaction();
-  //   try {
-  //     $new_image = $request->file('photo');
+    DB::beginTransaction();
+    try {
+      $model_query                      = Member::find($request->id);
+      $model_query->username            = $request->username;
+      $model_query->email               = MyLib::emptyStrToNull($request->email);
+      $model_query->fullname            = MyLib::emptyStrToNull($request->fullname);
+      $model_query->phone_number        = MyLib::emptyStrToNull($request->phone_number);
+      if ($request->password)
+        $model_query->password          = bcrypt($request->password);
 
-  //     if ($new_image != null) {
-  //       $date = new \DateTime();
-  //       $timestamp = $date->format("Y-m-d H:i:s.v");
-  //       $ext = $new_image->extension();
-  //       $file_name = md5(preg_replace('/( |-|:)/', '', $timestamp)) . '.' . $ext;
-  //       $filePath = "files/members/";
-  //       $location = $filePath . $file_name;
-  //       // $location = "files/members/{$file_name}";
+      $model_query->updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
+      $model_query->updated_by = $this->auth->id;
+      $model_query->save();
 
-  //       ini_set('memory_limit', '256M');
-  //       // $url = "files/directory/brochures/{$file_name}";
-  //       // Image::make($new_image)->save(public_path($location));
-  //       // Image::make($new_image)->save(files_path($url));
-  //       $new_image->move(files_path($filePath), $file_name);
-  //     }
-
-  //     if ($new_image == null && $photo_preview == null) {
-  //       $location = null;
-  //     }
-
-  //     $model_query                      = Member::find($request->id);
-
-
-  //     if ($photo_preview == null) {
-  //       if (File::exists(files_path($model_query->photo)) && $model_query->photo != null) {
-  //         unlink(files_path($model_query->photo));
-  //       }
-
-  //       // if(File::exists(files_path($data->url)) && $data->url != null){
-  //       //   unlink(files_path($data->url));
-  //       // }
-  //     }
-
-
-  //     if ($can_login == 1 && $password == null && $model_query->password == null) {
-  //       return response()->json([
-  //         "password" => ["Password Perlu diisi"],
-  //       ], 422);
-  //     }
-
-  //     $model_query->username            = $request->username;
-  //     $model_query->email               = $request->email;
-  //     $model_query->fullname            = $request->fullname;
-  //     if ($password)
-  //       $model_query->password          = bcrypt($password);
-  //     $model_query->can_login           = $request->can_login;
-  //     $model_query->photo               = $location;
-
-  //     $model_query->internal_updated_at = MyLib::manualMillis(date("Y-m-d H:i:s"));
-  //     $model_query->internal_updated_by = $this->auth->id;
-  //     $model_query->save();
-
-  //     DB::commit();
-  //     return response()->json([
-  //       "message" => "Proses ubah data berhasil",
-  //     ], 200);
-  //   } catch (\Exception $e) {
-  //     DB::rollback();
-  //     if ($e->getCode() == 1) {
-  //       return response()->json([
-  //         "message" => $e->getMessage(),
-  //       ], 400);
-  //     }
-  //     return response()->json([
-  //       "message" => $e->getMessage(),
-  //     ], 400);
-  //     return response()->json([
-  //       "message" => "Proses ubah data gagal"
-  //     ], 400);
-  //   }
-  // }
+      DB::commit();
+      return response()->json([
+        "message" => "Proses ubah data berhasil",
+      ], 200);
+    } catch (\Exception $e) {
+      DB::rollback();
+      if ($e->getCode() == 1) {
+        return response()->json([
+          "message" => $e->getMessage(),
+        ], 400);
+      }
+      return response()->json([
+        "message" => $e->getMessage(),
+      ], 400);
+      return response()->json([
+        "message" => "Proses ubah data gagal"
+      ], 400);
+    }
+  }
 
 
   // public function delete(MemberRequest $request)

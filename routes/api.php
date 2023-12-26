@@ -79,6 +79,7 @@ Route::prefix('main')->group(function () {
 
   Route::get('/operator/members', [\App\Http\Controllers\Main\Operator\MemberController::class, 'index']);
   Route::post('/operator/member', [\App\Http\Controllers\Main\Operator\MemberController::class, 'store']);
+  Route::put('/operator/member', [\App\Http\Controllers\Main\Operator\MemberController::class, 'update']);
 
   Route::get('/operator/class_rooms', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'index']);
   Route::get('/operator/class_room', [\App\Http\Controllers\Main\Operator\ClassRoomController::class, 'show']);

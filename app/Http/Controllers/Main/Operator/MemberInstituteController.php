@@ -115,7 +115,7 @@ class MemberInstituteController extends Controller
             }
 
             if (isset($like_lists["username"])) {
-                $model_query = $model_query->orWhere("member_id", function ($q) use ($like_lists) {
+                $model_query = $model_query->orWhereIn("member_id", function ($q) use ($like_lists) {
                     $q->from('members');
                     $q->select("id");
                     $q->where("username", "ilike", $like_lists["username"]);

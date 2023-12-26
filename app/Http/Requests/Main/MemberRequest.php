@@ -28,6 +28,7 @@ class MemberRequest extends FormRequest
         if (request()->isMethod('post')) {
             $rules['username'] = 'required|max:255|regex:/^\S*$/|unique:App\Model\Main\Member,username';
             $rules['email'] = 'nullable|email|max:255|unique:App\Model\Main\Member,email';
+            $rules['create_as'] = 'required|in:operator,teacher,student';
         }
         if (request()->isMethod('get')) {
             $rules['id'] = 'required|exists:App\Model\Main\Member,id';
@@ -41,7 +42,6 @@ class MemberRequest extends FormRequest
             // $rules['role'] = 'required';
             $rules['can_login'] = 'required|in:0,1';
             $rules['password'] = 'required_if:can_login,1|min:8';
-            $rules['create_as'] = 'required|in:operator,teacher,student';
             $rules['link_name'] = 'required|exists:\App\Model\Main\Institute,link_name';
 
             // $rules['photo'] = 'nullable|image|mimes:jpeg|max:2048';
